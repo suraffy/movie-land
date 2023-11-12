@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
 import "./App.css";
+import searchIcon from "./search.svg";
 
 const API_URL = "http://www.omdbapi.com/?i=tt3896198&apikey=70bf54b8";
 
