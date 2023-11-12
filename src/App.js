@@ -5,44 +5,57 @@ import searchIcon from "./search.svg";
 
 const API_URL = "http://www.omdbapi.com/?i=tt3896198&apikey=70bf54b8";
 
-const movie = {
-  Title: "Spiderman",
-  Year: "1990",
-  imdbID: "tt0100669",
-  Type: "movie",
-  Poster: "N/A",
-};
-
 const App = () => {
+  const [movies, setMovies] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
   useEffect(() => {
-    const searchMovies = async (title) => {
-      const response = await fetch(`${API_URL}&s=${title}`);
-      const data = await response.json();
-
-      console.log(data.Search);
-    };
-
-    searchMovies("spiderman");
+    searchMovies("batman");
   }, []);
+
+  const searchMovies = async (title) => {
+    if (!title) title = "spiderman";
+
+    const response = await fetch(`${API_URL}&s=${title}`);
+    const data = await response.json();
+
+    data.Search ? setMovies(data.Search) : setMovies([]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    searchMovies(searchText);
+  };
 
   return (
     <div className="app">
       <h1>MovieLand</h1>
 
-      <div className="search">
+      <form className="search" onSubmit={handleSubmit}>
         <input
           type="search"
-          value="Spiderman"
-          onChange={() => {}}
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
           placeholder="Search movies"
+          autoFocus={true}
         />
 
-        <img src={searchIcon} alt="search" onClick={() => {}} />
-      </div>
+        <img src={searchIcon} alt="search" />
+      </form>
 
-      <div className="container">
-        <MovieCard movie={movie} />
-      </div>
+      {movies.length > 0 ? (
+        <div className="container">
+          {movies.map((movie) => (
+            <MovieCard key={movie.imdbID} movie={movie} />
+          ))}
+        </div>
+      ) : (
+        <div className="empty">
+          <h2>No movie found</h2>
+        </div>
+      )}
     </div>
   );
 };
